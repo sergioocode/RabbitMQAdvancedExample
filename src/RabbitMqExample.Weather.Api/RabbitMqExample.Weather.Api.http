@@ -1,0 +1,12 @@
+# Puerto de launchSettings.json cuando Weather se ejecuta desde Visual Studio.
+@WeatherApi = http://localhost:5210
+
+# Devuelve información sobre la cola y la operación RPC que atiende Weather.
+GET {{WeatherApi}}/
+Accept: application/json
+
+###
+
+# Comprueba si Weather está conectado a RabbitMQ y preparado para consumir mensajes.
+GET {{WeatherApi}}/health
+Accept: application/json

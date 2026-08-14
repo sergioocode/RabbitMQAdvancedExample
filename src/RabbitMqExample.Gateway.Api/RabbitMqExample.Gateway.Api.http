@@ -1,0 +1,18 @@
+# Puerto de launchSettings.json cuando Gateway se ejecuta desde Visual Studio.
+@Gateway = http://localhost:5058
+
+# Devuelve información básica del Gateway y muestra cuál es su endpoint principal.
+GET {{Gateway}}/
+Accept: application/json
+
+###
+
+# Inicia el flujo RPC completo: Gateway publica la solicitud y Weather devuelve la respuesta mediante RabbitMQ.
+GET {{Gateway}}/weather?days=5
+Accept: application/json
+
+###
+
+# Comprueba que el Gateway está conectado a RabbitMQ y preparado para publicar solicitudes RPC.
+GET {{Gateway}}/health
+Accept: application/json

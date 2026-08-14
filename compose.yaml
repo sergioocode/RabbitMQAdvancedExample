@@ -1,0 +1,39 @@
+# Nombre con el que Docker Compose agrupa red, contenedores y volumen.
+name: rabbitmq-advanced-example
+
+services:
+  rabbitmq:
+    # Imagen oficial fijada a una versión concreta. "management" añade el panel
+    # web y "alpine" utiliza una distribución Linux más pequeña.
+    image: rabbitmq:4.3.4-management-alpine
+
+    # Nombre DNS del broker dentro de la red privada creada por Compose.
+    hostname: rabbitmq
+
+    # Credenciales iniciales del entorno local. No son apropiadas para producción.
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app
+
+    ports:
+      # AMQP: aplicaciones .NET del host -> RabbitMQ del contenedor.
+      - "5672:5672"
+
+      # Panel de administración: http://localhost:15672 (app / app).
+      - "15672:15672"
+
+    volumes:
+      # Mantiene datos del broker aunque el contenedor sea recreado.
+      - rabbitmq-data:/var/lib/rabbitmq
+
+    healthcheck:
+      # Comprueba que los puertos del nodo ya aceptan conexiones TCP.
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+
+# Volumen administrado por Docker y utilizado por el servicio rabbitmq.
+volumes:
+  rabbitmq-data:
