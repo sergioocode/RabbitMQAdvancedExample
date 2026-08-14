@@ -1,0 +1,12 @@
+# Puerto publicado por Docker Compose para Weather.
+@WeatherApi = http://localhost:8081
+
+# Devuelve información sobre la cola y la operación RPC que atiende Weather.
+GET {{WeatherApi}}/
+Accept: application/json
+
+###
+
+# Comprueba si Weather está conectado a RabbitMQ y preparado para consumir mensajes.
+GET {{WeatherApi}}/health
+Accept: application/json

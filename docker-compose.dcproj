@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerComposeProjectName>rabbitmq-advanced-example-dockerfile-vs</DockerComposeProjectName>
+    <DependencyAwareStart>true</DependencyAwareStart>
+    <DockerLaunchAction>None</DockerLaunchAction>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+  </ItemGroup>
+</Project>

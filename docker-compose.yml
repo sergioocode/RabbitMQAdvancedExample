@@ -1,0 +1,62 @@
+name: rabbitmq-advanced-example-dockerfile-vs
+
+services:
+  rabbitmq:
+    image: rabbitmq:4.3.4-management-alpine
+    container_name: rabbitmq-advanced-example-rabbitmq-dockerfile-vs
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - rabbitmq-advanced-example-dockerfile-vs-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+
+  gateway-api:
+    image: ${DOCKER_REGISTRY-}rabbitmqexamplegatewayapi
+    container_name: rabbitmq-advanced-example-gateway-api-dockerfile-vs
+    build:
+      context: .
+      dockerfile: src/RabbitMqExample.Gateway.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+    ports:
+      - "8080:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    labels:
+      com.microsoft.visual-studio.project-name: RabbitMqExample.Gateway.Api
+
+  weather-api:
+    image: ${DOCKER_REGISTRY-}rabbitmqexampleweatherapi
+    container_name: rabbitmq-advanced-example-weather-api-dockerfile-vs
+    build:
+      context: .
+      dockerfile: src/RabbitMqExample.Weather.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+    ports:
+      - "8081:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    labels:
+      com.microsoft.visual-studio.project-name: RabbitMqExample.Weather.Api
+
+volumes:
+  rabbitmq-advanced-example-dockerfile-vs-data:
